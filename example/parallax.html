@@ -1,0 +1,185 @@
+
+<!--
+	selector: data-scene | data-sub-scene
+	controller: data-controller="scene" | data-sub-controller="scene"
+	only sub: data-scene-begin="50" | data-scene-end="100"
+-->
+<html>
+	<head>
+		
+		<title>scrollObserver - Parallax</title>
+		
+		<meta charset="UTF-8">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<style>
+			
+			.example{
+			
+				margin-bottom: 600px;
+			
+			}
+			
+			.scene{
+			
+				width: 100%;
+				overflow: hidden;
+			
+			}
+			
+			.parallax-image{
+			
+				width: 100%;
+				height: 250px;
+			
+			}
+			
+			@media only screen and (min-width: 786px){
+			
+				.parallax-image{
+			
+					height: 400px;
+			
+				}
+			
+			}
+			
+			@media only screen and (min-width: 1024px){
+			
+				.parallax-image{
+			
+					height: 800px;
+			
+				}
+			
+			}
+
+			.image1{
+
+				background: url('http://placekitten.com/1200');
+				-webkit-background-size: cover;
+	  			-moz-background-size: cover;
+	  			-o-background-size: cover;
+	  			background-size: cover;
+	  			background-repeat: no-repeat;
+	  			background-position: 50% 0;
+			
+			}
+
+			.image2{
+			
+				background: url('http://placekitten.com/1440');
+				-webkit-background-size: cover;
+	  			-moz-background-size: cover;
+	  			-o-background-size: cover;
+	  			background-size: cover;
+	  			background-repeat: no-repeat;
+	  			background-position: 50% 0;
+			
+			}
+			
+			.image3{
+			
+				background: url('http://placekitten.com/1024');
+				-webkit-background-size: cover;
+	  			-moz-background-size: cover;
+	  			-o-background-size: cover;
+	  			background-size: cover;
+	  			background-repeat: no-repeat;
+	  			background-position: 50% 0;
+			
+			}
+		
+		</style>
+
+	</head>
+
+	<body>
+
+		<div class="example">
+
+			<div>
+			
+				<h1>Parallax Example</h1>
+			
+			</div>
+			
+			<h2>Example #1</h2>
+			
+			<div class="scene" data-scene data-controller="parallax1">
+			
+				<div class="parallax-image image1"></div>
+			
+			</div>
+			
+			<h2>Example #2</h2>
+			
+			<div class="scene" data-scene data-controller="parallax2">
+			
+				<div class="parallax-image image2"></div>
+			
+			</div>
+			
+			<h2>Example #3</h2>
+			
+			<div class="scene" data-scene data-controller="parallax3">
+			
+				<div class="parallax-image image3"></div>
+			
+			</div>
+
+		</div>
+
+		<script src="../scrollObserver.js"></script>
+
+		<script>
+
+			var image1 = document.querySelector('.image1');
+			var image2 = document.querySelector('.image2');
+			var image3 = document.querySelector('.image3');
+
+			scrollObserver({
+
+				triggerOffset: 0,
+
+				controllers: {
+
+					//example #1
+					parallax1: function(obj, state)
+					{
+						
+						var offset = obj.yPx / 2;
+						image1.style.transform = 'translate( 0, '+ offset +'px)';
+						image1.style.webkitTransform = 'translate( 0, '+ offset +'px )';
+
+					},
+					
+					//example #2
+					parallax2: function(obj, state)
+					{
+
+						var offset = obj.yPx / 2;
+						image2.style.transform = 'translate( 0, '+ offset +'px )';
+						image2.style.webkitTransform = 'translate( 0, '+ offset +'px )';
+
+					},
+
+					//example #3
+					parallax3: function(obj, state)
+					{
+
+						var offset = obj.yPx / 2;
+						image3.style.transform = 'translate( 0, '+ offset +'px )';
+						image3.style.webkitTransform = 'translate( 0, '+ offset +'px )';
+
+					}
+
+				}
+
+			});
+
+		</script>
+
+	</body>
+</html>

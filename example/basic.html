@@ -1,0 +1,70 @@
+
+<!--
+	selector: data-scene | data-sub-scene
+	controller: data-controller="scene" | data-sub-controller="scene"
+	only sub: data-scene-begin="50" | data-scene-end="100"
+-->
+<html>
+	<head>
+		
+		<title>scrollObserver - Basic Animations</title>
+		
+		<meta charset="UTF-8">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<style>
+			
+			.example{
+				width: 600px;
+				margin-bottom: 1000px;
+			
+			}
+			.scene1{
+				height: 360px;
+				border-right: 1px solid tomato;
+			}
+			.ball{
+				position: fixed;
+			}
+		</style>
+
+	</head>
+
+	<body>
+
+		<div class="example">
+			
+			<div class="scene1" data-scene data-controller="spin">
+			
+				<div class="ball"><img src="images/football.png" /></div>
+			
+			</div>
+
+		</div>
+
+		<script src="../scrollObserver.js"></script>
+		<script>
+
+			var fb = document.querySelector('.ball');
+
+			scrollObserver({
+
+				triggerOffset: 0,
+
+				controllers: {
+
+					//example #1
+					spin: function(obj, state)
+					{
+						fb.style.transform = 'rotate('+ obj.yPx +'deg)';
+					}
+
+				}
+
+			});
+
+		</script>
+
+	</body>
+</html>
