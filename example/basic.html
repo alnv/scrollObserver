@@ -17,16 +17,121 @@
 			
 			.example{
 				width: 600px;
+				margin-left: auto;
+				margin-right: auto;
 				margin-bottom: 1000px;
 			
 			}
 			.scene1{
-				height: 360px;
-				border-right: 1px solid tomato;
+				height: 500px;
+				border-right: 3px solid #dedede;
+				margin-bottom: 50px;
 			}
-			.ball{
+			.scene2{
+				height: 500px;
+				border-right: 3px solid #dedede;
+			}
+
+			.fixed{
+				top: 10%;
 				position: fixed;
 			}
+
+			.contentExample{
+				opacity: 0;
+				width: 600px;
+			}
+
+			
+
+			/**
+			 * fade in
+			 */
+			 @-webkit-keyframes fadein {
+			
+				0% {
+				
+					opacity: 0;
+				
+				}
+				
+				100% {
+				
+					opacity: 1;
+				
+				}
+			
+			} 
+
+			@keyframes fadein {
+
+				0% {
+			  	
+			  		opacity: 0;
+			 	
+			 	}
+			
+				100% {
+				
+					opacity: 1;
+				
+				}
+			
+			}
+			.fadein{
+
+				-webkit-animation: fadein 250ms;
+				-webkit-animation-iteration-count: 1;
+				animation: fadein 250ms;
+				animation-iteration-count: 1;
+				opacity: 1;
+
+			}
+
+			/**
+			 * fade out
+			 */
+			@-webkit-keyframes fadeout {
+			
+				0% {
+				
+					opacity: 1;
+				
+				}
+			
+				100% {
+				
+					opacity: 0;
+				
+				}
+
+			}
+
+			@keyframes fadeout {
+
+				0% {
+				
+					opacity: 1;
+				
+				}
+				
+				100% {
+				
+					opacity: 0;
+				
+				}
+			
+			}
+			.fadeout{
+
+				-webkit-animation: fadeout 250ms;
+				-webkit-animation-iteration-count: 1;
+				animation: fadeout 250ms;
+				animation-iteration-count: 1;
+				opacity: 0;
+			}
+
+
 		</style>
 
 	</head>
@@ -37,7 +142,7 @@
 			
 			<div class="scene1" data-scene data-controller="spin">
 			
-				<div class="ball"><img src="images/football.png" /></div>
+				<div class="footballExample fixed"><img src="images/football.png" /></div>
 			
 			</div>
 
@@ -46,7 +151,7 @@
 		<script src="../scrollObserver.js"></script>
 		<script>
 
-			var fb = document.querySelector('.ball');
+			var fbEx = document.querySelector('.footballExample');
 
 			scrollObserver({
 
@@ -54,15 +159,31 @@
 
 				controllers: {
 
-					//example #1
+					
 					spin: function(obj, state)
 					{
-						fb.style.transform = 'rotate('+ obj.yPx +'deg)';
+						
+						var steps = (360 / 100) * obj.yPt;
+
+						fbEx.style.transform = 'rotate('+ steps +'deg)';
+						
+						if(state === 'pastBottom')
+						{
+							fbEx.classList.add('fadeout');
+							fbEx.classList.remove('fadein');
+						}
+
+						if(state === 'arrivedBottom')
+						{
+							fbEx.classList.add('fadein');
+							fbEx.classList.remove('fadeout');
+						}
 					}
 
 				}
 
 			});
+			
 
 		</script>
 
