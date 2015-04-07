@@ -80,7 +80,7 @@ var scrollObserver = function(_options)
 	{
 		
 		getGlobalYPosition();
-
+		
 		for ( var index in trigger )
 		{
 			callMainController(trigger[index]);
@@ -461,7 +461,7 @@ var scrollObserver = function(_options)
 				controller: _controller,
 				height: ( _triggerEnd - _triggerStart ),
 				past: false,
-				arrive: true,
+				arrive: false,
 				direction: 'down',
 				yGlobPx: scrollY,
 				yPx: scrollY - _triggerStart,
