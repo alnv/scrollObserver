@@ -15,63 +15,96 @@
  */
 var scrollObserver = function(_options)
 {
-	
 
-	var requestAnimationFrame;
 	var options;
 	var scrollY = 0;
+	var frame;
 	var elements = null;
 	var trigger = {};
+	var interval;
+	var now = window.performance && ( performance.now || performance.mozNow || performance.msNow || performance.oNow || performance.webkitNow );
+	var moment; 
+    var preTime; 
+    var pastTime; 
+    var animStart;
 
 	/**
      * create raf
-	 * http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 	 */
 	var createRaf = function()
 	{
 		
-		var raf = window.requestAnimationFrame ||
-			window.webkitRequestAnimationFrame ||
-			window.mozRequestAnimationFrame ||
-			function(callback)
-			{
-				window.setTimeout(callback, 1000 / 60);
-			}
-		
-		return raf;
+		var lastTime = 0;
+        var vendors = ['webkit', 'moz'];
+
+        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x)
+        {
+            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+            window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+        }
+
+        if (!window.requestAnimationFrame)
+        {
+            window.requestAnimationFrame = function(callback, element)
+            {
+                var currTime =  Motion.getTime();
+                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+                var id = window.setTimeout( function() { callback ( currTime + timeToCall ); }, timeToCall );
+                lastTime = currTime + timeToCall;
+                return id;
+
+            }
+        }
+
+        if (!window.cancelAnimationFrame)
+        {
+            window.cancelAnimationFrame = function(id)
+            {
+                clearTimeout(id);
+            }
+        }
+
 	}
 
 	/**
      * initialize requestAnimationFrame
      */
-	var initRaf = function()
+	var init = function()
 	{
-		requestAnimationFrame = createRaf();
-	}
 
-	/**
-     * start animate with custom fps
-     */
-	var animateFPS = function()
-	{
-		
-		setTimeout( function() 
-		{
-			requestAnimationFrame(animateFPS);
-			update();
-
-		}, 1000 / options.fps );
+		preTime = getTime();
+        animStart = preTime;
+        interval = 1000 / options.fps;
+		createRaf();
 
 	}
 
 	/**
-	 * no custom fsp
+	 * get current timestamp
 	 */
-	var animateDefault = function()
-	{
-		requestAnimationFrame(animateDefault);
-		update();
-	}
+	var getTime = function()
+    {
+        return ( ( now && now.call( performance ) ) || ( new Date().getTime() ) );
+    };
+
+    /**
+     * animate
+     */
+    var animate = function()
+    {
+    	frame = window.requestAnimationFrame(animate, document);
+    	moment = getTime();
+        pastTime = moment - preTime;
+
+        if( pastTime > interval )
+        {
+
+            preTime = moment - (pastTime % interval);
+            update();
+   
+        }
+
+    }
 
 	/**
 	 * update scrollY Position & check trigger obj
@@ -323,17 +356,8 @@ var scrollObserver = function(_options)
 	var startAnimation = function()
 	{
 		
-		initRaf();
-		
-		if( options.fps > 0 )
-		{
-			animateFPS();
-		}
-		else
-		{
-			animateDefault();
-		}
-
+		init();
+		animate();
 	}
 
 	/**
@@ -374,7 +398,7 @@ var scrollObserver = function(_options)
 		//default
 		options =
 		{
-			fps: 0,
+			fps: 30,
 			triggerOffset: 0,
 			controllers: {}
 		}
@@ -423,35 +447,21 @@ var scrollObserver = function(_options)
 		{
 			_scenes = _parentScene.querySelectorAll('[data-sub-scene]');
 		}
-
-		/**
-		 *
-		 */
+		
 		while ( _i < _scenes.length )
 		{
 
 			var _scene =  _scenes[ _i ];
 			
-			/**
-			 *
-			 */
 			if( _parentScene !== undefined )
 			{
-			
 				_ctlNameAttr = 'data-sub-controller';
-			
 			}
 
-			/**
-			 *
-			 */
 			var _controller = _scene.getAttribute(_ctlNameAttr) || null;
 			var _triggerStart =  _scene.offsetTop;
 			var _triggerEnd =  ( _scene.offsetHeight + _scene.offsetTop );
 
-			/**
-			 *
-			 */
 			_trigger[ _i ] = 
 			{
 
@@ -469,23 +479,17 @@ var scrollObserver = function(_options)
 
 			}
 			
-			/**
-			 *
-			 */
 			if( _parentScene === undefined )
 			{
 				
-				//parent
 				_trigger[ _i ]['subScenes'] = getSubScenes( _scene );
 
 			}
 			else
 			{
 
-				//sub
 				_trigger[ _i ]['sceneBegin'] = parseInt( _scene.getAttribute('data-scene-begin') ) || 0;
 				_trigger[ _i ]['sceneEnd'] = parseInt( _scene.getAttribute('data-scene-end') ) || 100;
-
 
 			}
 			
